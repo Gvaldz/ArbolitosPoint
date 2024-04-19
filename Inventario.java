@@ -33,8 +33,22 @@ public class Inventario {
                     default:
                         break;
                 }
-                String nombre = scanner.nextLine();
+                String nombre;
+                boolean encontrado = false; 
+                do {
+                    encontrado = false;
+                    nombre = scanner.nextLine().trim();
+                    for (int i = 0; i < productos.size(); i++) {
+                        Producto p = productos.get(i);
+                        if (p.getNombre().equalsIgnoreCase(nombre)) {
+                            encontrado = true;
+                            System.out.println("¡El producto ya existe en el inventario! Ingrese otro nombre.");
+                        }
+                    }
+                } while (encontrado);
+
                 producto.setNombre(nombre);
+                
                 do {
                     try {
                         System.out.println("Ingrese el precio:");
@@ -50,7 +64,7 @@ public class Inventario {
                 } while (producto.getPrecio() <= 0);
                 do {
                     try {
-                        System.out.println("Ingrese la cantidad de producto:");
+                        System.out.println("Ingrese la cantidad de productos:");
                         int nuevaCantidad = scanner.nextInt();
                         producto.setCantidadProducto(nuevaCantidad);
                         if (producto.getCantidadProducto() <= 0) {
@@ -93,89 +107,66 @@ public class Inventario {
             }        
     }
 
-    public void modificarProducto() {
+    public void modificarProducto(int opcion, Producto producto) {
         Scanner scanner = new Scanner(System.in);
-        String nombreProducto;
-        System.out.println("Ingrese el nombre del producto que desea modificar:");
-        nombreProducto = scanner.nextLine();
-        boolean encontrado = false;
-        for (int i = 0; i < productos.size(); i++) {
-            Producto producto = productos.get(i);
-            if (producto.getNombre().equalsIgnoreCase(nombreProducto)) {
-                encontrado = true;
-                System.out.println("¿Qué desea modificar del producto " + nombreProducto + "?");
-                System.out.println("1) Nombre");
-                System.out.println("2) Precio");
-                System.out.println("3) Cantidad");
-                System.out.println("4) Descripción");
-    
-                System.out.println("Ingrese el número correspondiente al atributo que desea modificar:");
-                int opcion = scanner.nextInt();
-                scanner.nextLine();
-                switch (opcion) {
-                    case 1:
-                        System.out.println("Ingrese el nuevo nombre:");
-                        String nuevoNombre = scanner.nextLine();
-                        producto.setNombre(nuevoNombre);
-                        break;
-                        case 2:
-                        do {
-                            try {
-                                System.out.println("Ingrese el nuevo precio:");
-                                float nuevoPrecio = scanner.nextFloat();
-                                producto.setPrecio(nuevoPrecio);
-                                if (producto.getPrecio() <= 0) {
-                                    System.out.println("Ingrese un precio válido");
-                                }
-                            } catch (InputMismatchException e) {
-                                System.out.println("Por favor, ingrese un valor numérico válido para el precio.");
-                                scanner.nextLine();
-                            }
-                        } while (producto.getPrecio() <= 0);
-                        break;
-                        case 3:
-                        do {
-                            try {
-                                System.out.println("Ingrese la nueva cantidad:");
-                                int nuevaCantidad = scanner.nextInt();
-                                producto.setCantidadProducto(nuevaCantidad);
-                                if (producto.getCantidadProducto() <= 0) {
-                                    System.out.println("Ingrese una cantidad válida");
-                                }
-                            } catch (InputMismatchException e) {
-                                System.out.println("Por favor, ingrese un valor numérico válido para la cantidad.");
-                                scanner.nextLine();
-                            }
-                        } while (producto.getCantidadProducto() <= 0);
-                        break;
-                    case 4:
-                    switch (producto.getTipo()) {
-                        case "Comestible":
-                            ((Comestible) producto).ingresarDescripcion();
-                            break;
-                        case "Bebida":
-                            ((Bebida) producto).ingresarDescripcion();
-                            break;
-                        case "Papeleria":
-                           ((Papeleria) producto).ingresarDescripcion();
-                            break;
-                        default:
-                            System.out.println("Opción no válida.");
-                            break;
+        switch (opcion) {
+            case 1:
+                System.out.println("Ingrese el nuevo nombre:");
+                String nuevoNombre = scanner.nextLine();
+                producto.setNombre(nuevoNombre);
+                break;
+                case 2:
+                do {
+                    try {
+                        System.out.println("Ingrese el nuevo precio:");
+                        float nuevoPrecio = scanner.nextFloat();
+                        producto.setPrecio(nuevoPrecio);
+                        if (producto.getPrecio() <= 0) {
+                            System.out.println("Ingrese un precio válido");
+                        }
+                    } catch (InputMismatchException e) {
+                        System.out.println("Por favor, ingrese un valor numérico válido para el precio.");
+                        scanner.nextLine();
                     }
-                        break;
-                    default:
-                        System.out.println("Opción no válida.");
-                        break;
-                }
-                System.out.println("Producto modificado con éxito.");
+                } while (producto.getPrecio() <= 0);
+                break;
+                case 3:
+                do {
+                    try {
+                        System.out.println("Ingrese la nueva cantidad:");
+                        int nuevaCantidad = scanner.nextInt();
+                        producto.setCantidadProducto(nuevaCantidad);
+                        if (producto.getCantidadProducto() <= 0) {
+                            System.out.println("Ingrese una cantidad válida");
+                        }
+                    } catch (InputMismatchException e) {
+                        System.out.println("Por favor, ingrese un valor numérico válido para la cantidad.");
+                        scanner.nextLine();
+                    }
+                } while (producto.getCantidadProducto() <= 0);
+                break;
+            case 4:
+            switch (producto.getTipo()) {
+                case "Comestible":
+                    ((Comestible) producto).ingresarDescripcion();
+                    break;
+                case "Bebida":
+                    ((Bebida) producto).ingresarDescripcion();
+                    break;
+                case "Papeleria":
+                ((Papeleria) producto).ingresarDescripcion();
+                break;
+                default:
+                System.out.println("Opción no válida.");
+                break;
             }
-        }
-        if (!encontrado) {
-            System.out.println("No se encontró ningún producto con el nombre " + nombreProducto);
+            break;
+            default:
+            System.out.println("Opción no válida.");
+            break;
         }
     }
-
+    
     public void verProductos(){
         if(productos.size()==0){
             System.out.println("No se han agregado productos");
