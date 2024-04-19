@@ -116,8 +116,8 @@ public class Herramienta {
     
                 switch (opcion) {
                     case 1:
-                        verMenuInventario();
-                        break;
+                    verMenuInventario();
+                    break;
                     case 2:
                         Egreso egreso = new Egreso();
                         egreso.ingresarTotal(getReporte().getTotalCaja());
@@ -186,7 +186,35 @@ public class Herramienta {
                         getInventario().eliminarProducto();
                         break;
                         case 4:
-                        getInventario().modificarProducto();
+                        String nombreProducto;
+                        System.out.println("Ingrese el nombre del producto que desea modificar:");
+                        nombreProducto = scanner.nextLine();
+                        boolean encontrado = false;
+                        for (int i = 0; i < inventario.getProductos().size(); i++) {
+                            Producto producto = inventario.getProductos().get(i);
+                            if (producto.getNombre().equalsIgnoreCase(nombreProducto)) {
+                                encontrado = true;
+                                System.out.println("¿Qué desea modificar del producto " + nombreProducto + "?");
+                                System.out.println("1) Nombre");
+                                System.out.println("2) Precio");
+                                System.out.println("3) Cantidad");
+                                System.out.println("4) Descripción");
+                                opcion = scanner.nextInt();
+                                inventario.modificarProducto(opcion, producto);
+                                if(opcion == 3){
+                                    System.out.println("Si agregó más productos al inventario, ¿Ya realizo el egreso correspomdiente?");
+                                    System.out.println("Teclee 's' si si, de lo contrario teclee cualquier digito y sera dirigido a generar egreso");
+                                    char respuesta = scanner.next().charAt(0);
+                                    if (respuesta != 's' || respuesta != 'S') {
+                                        Egreso egreso = new Egreso();
+                                        egreso.ingresarTotal(getReporte().getTotalCaja());
+                                        agregarEgreso(egreso);
+                                    }
+                                }
+                            }
+                        if (!encontrado) {
+                            System.out.println("No se encontró ningún producto con el nombre " + nombreProducto);
+                        }}
                         break;
                         case 5:
                         getInventario().buscarProducto();
